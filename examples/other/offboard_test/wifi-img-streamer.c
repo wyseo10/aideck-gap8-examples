@@ -34,10 +34,9 @@
 #include "cpx.h"
 #include "wifi.h"
 
-//Cam size int check
 #define IMG_ORIENTATION 0x0101
-#define CAM_WIDTH 162
-#define CAM_HEIGHT 122
+#define CAM_WIDTH 324
+#define CAM_HEIGHT 244
 
 static pi_task_t task1;
 static unsigned char *imgBuff;
@@ -60,8 +59,7 @@ static int open_pi_camera_himax(struct pi_device *device)
 
   pi_himax_conf_init(&cam_conf);
 
-//CAM size check
-  cam_conf.format = PI_CAMERA_QQVGA;
+  cam_conf.format = PI_CAMERA_QVGA;
 
   pi_open_from_conf(device, &cam_conf);
   if (pi_camera_open(device))
@@ -145,8 +143,7 @@ uint32_t footerSize;
 pi_buffer_t jpeg_data;
 uint32_t jpegSize;
 
-//encoding check
-static StreamerMode_t streamerMode = JPEG_ENCODING;
+static StreamerMode_t streamerMode = RAW_ENCODING;
 
 static CPXPacket_t txp;
 
@@ -177,8 +174,7 @@ void sendBufferViaCPX(CPXPacket_t * packet, uint8_t * buffer, uint32_t bufferSiz
   } while (size == sizeof(packet->data));
 }
 
-//check
-// #ifdef SETUP_WIFI_AP
+#ifdef SETUP_WIFI_AP
 void setupWiFi(void) {
   static char ssid[] = "WiFi streaming example";
   cpxPrintToConsole(LOG_TO_CRTP, "Setting up WiFi AP\n");
@@ -199,15 +195,15 @@ void setupWiFi(void) {
   txp.dataLength = 2;
   cpxSendPacketBlocking(&txp);
 }
-// #endif
+#endif
 
 void camera_task(void *parameters)
 {
   vTaskDelay(2000);
 
-// #ifdef SETUP_WIFI_AP
+#ifdef SETUP_WIFI_AP
   setupWiFi();
-// #endif
+#endif
 
   cpxPrintToConsole(LOG_TO_CRTP, "Starting camera task...\n");
   uint32_t resolution = CAM_WIDTH * CAM_HEIGHT;

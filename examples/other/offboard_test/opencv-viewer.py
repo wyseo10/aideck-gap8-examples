@@ -106,12 +106,11 @@ while(1):
       meanTimePerImage = (time.time()-start) / count
       print("{}".format(meanTimePerImage))
       print("{}".format(1/meanTimePerImage))
-      
-      if format == 0:
-          bayer_img = np.frombuffer(imgStream, dtype=np.uint8)
-          bayer_img.shape = (162, 162)
-          color_img = cv2.cvtColor(bayer_img, cv2.COLOR_BayerBG2BGRA)
 
+      if format == 0:
+          bayer_img = np.frombuffer(imgStream, dtype=np.uint8)   
+          bayer_img.shape = (244, 324)
+          color_img = cv2.cvtColor(bayer_img, cv2.COLOR_BayerBG2BGRA)
           cv2.imshow('Raw', bayer_img)
           cv2.imshow('Color', color_img)
           if args.save:
